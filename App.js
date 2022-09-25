@@ -383,7 +383,7 @@ function ImportSection(props) {
                 numberOfLines={10}
               />
         </View>
-        <Text style={styles.importExampleText}>Format: Lang1Word1: Lang2Word1, Lang1Word2: Lang2Word2 etc...</Text>
+        <Text style={styles.importExampleText}>Format: Lang2Word1: Lang1Word1, Lang2Word2: Lang1Word2 etc...</Text>
         <View style={styles.importButtons}>
           <View style={styles.importButton}>
             <Button onPress={() => props.exportItems()} 
