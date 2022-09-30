@@ -38,7 +38,6 @@ export default function App() {
   }
 
   const _loadItems = async () => {
-    console.log("hard load")
     try{
       const keydata = await AsyncStorage.getAllKeys();
       const storedData = await AsyncStorage.multiGet(keydata);
@@ -53,11 +52,23 @@ export default function App() {
         };
         loadedWordList.push(loadedWordItem);
       });
+
+      if(loadedWordList.length < 1){
+        const sampleWordItem = {
+          eng: "tap in-line to edit",
+          esp: "Sample word",
+          newEng: "tap in-line to edit",
+          newEsp: "Sample word",
+          editMode: false
+        };
+        loadedWordList.push(sampleWordItem);
+        setShowAdd(true);
+      }
       sortList(loadedWordList);
       setWordList(loadedWordList);
+      
     }
     catch (error) {
-      console.log(error);
     }
   }
   const _storeItem = async (item) => {
@@ -65,7 +76,6 @@ export default function App() {
       await AsyncStorage.setItem(item.eng, item.esp);
     }
     catch (error) {
-      console.log(error);
     }
   }
   const _deleteItem = async (item) => {
@@ -73,7 +83,6 @@ export default function App() {
       await AsyncStorage.removeItem(item.eng);
     }
     catch (error) {
-      console.log(error);
     }
   }
   const _updateItem = async (item) => {
@@ -82,7 +91,6 @@ export default function App() {
       await AsyncStorage.setItem(item.newEng, item.newEsp);
     }
     catch (error) {
-      console.log(error);
     }
   }
   const _saveImport = async (insertList) => {
@@ -90,7 +98,6 @@ export default function App() {
       await AsyncStorage.multiSet(insertList, _loadItems);
     }
     catch (error) {
-      console.log(error);
     }
   }
   const _deleteAllData = async () => {
@@ -98,7 +105,6 @@ export default function App() {
       await AsyncStorage.clear(_loadItems);
     }
     catch (error) {
-      console.log(error);
     }
   }
   
@@ -120,8 +126,20 @@ export default function App() {
     return false;
   }
 
+  function addButtonClick(){
+    setShowAdd(!showAdd);
+    setShowImport(false);
+  }
+
   function langButtonClick(){
     setEngMode(!engMode);
+    setShowAdd(false);
+    setShowImport(false);
+  }
+
+  function importButtonClick(){
+    setShowImport(!showImport);
+    setShowAdd(false);
   }
   
   function onAddWordClick(){
@@ -202,7 +220,7 @@ export default function App() {
   function saveListItem(item){
     if(item.editMode){
       const newList = wordList.slice().filter(word => !(word.eng === item.eng && word.esp === item.esp));
-      const newItem = structuredClone(item);
+      const newItem = item;
       newItem.editMode = false, newItem.eng = newItem.newEng, newItem.esp = newItem.newEsp;
       newList.push(newItem);
       sortList(newList);
@@ -231,7 +249,7 @@ export default function App() {
     <View style={styles.container}> 
       <ButtonBar showAdd={showAdd} showImport={showImport} engMode={engMode} showTrnsl={showTrnsl} 
         setShowAdd={setShowAdd} setShowImport={setShowImport} setEngMode={setEngMode} setShowTrnsl={setShowTrnsl} 
-        langButtonClick={langButtonClick} deleteAll={deleteAll} />
+        addButtonClick={addButtonClick}  langButtonClick={langButtonClick} importButtonClick={importButtonClick} deleteAll={deleteAll} />
       
       <AddSection showAdd={showAdd} engText={engText} espText={espText} 
         setEngText={setEngText} setEspText={setEspText} onAddWordClick={onAddWordClick} />
@@ -308,7 +326,7 @@ function ButtonBar(props) {
   return(
     <View style={styles.buttonBarWrapper} >
       <TouchableOpacity style={[styles.topButton, props.showAdd ? styles.showAddButtonOpen: styles.showAddButtonClosed]} 
-        onPress={() => props.setShowAdd(!props.showAdd)}>
+        onPress={() => props.addButtonClick()}>
         <Icon
           name={props.showAdd ? 'close' : 'plus'}
           size={15}
@@ -332,7 +350,7 @@ function ButtonBar(props) {
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.topButton, props.showImport ? styles.showImportButtonOpen: styles.showImportButtonClosed]} 
-        onPress={() => props.setShowImport(!props.showImport)}>
+        onPress={() => props.importButtonClick()}>
         <Icon
           name={props.showImport ? 'close' : 'file-text'}
           size={15}

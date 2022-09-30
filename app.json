@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "TranslationVocabList",
+    "name": "Translation Vocab List",
     "slug": "TranslationVocabList",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/translateicon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/translatesplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,13 +21,20 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.TranslationVocabList",
+      "versionCode": 3,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/translateicon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/translateicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b2b2e08a-5ceb-4985-998f-ceb6d5ef03de"
+      }
     }
   }
 }
