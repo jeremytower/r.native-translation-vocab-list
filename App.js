@@ -133,13 +133,25 @@ export default function App() {
     if(cleanUploadString.slice(-1) == ','){cleanUploadString = cleanUploadString.slice(0, -1);}
     const itemsArr = cleanUploadString.split(',');
     const insertList = [];
-    itemsArr.forEach(item => {
-      const splitItem = item.split('-').reverse();
-      const cleanedSplitItem = [];
-      cleanedSplitItem.push(splitItem[0].replace('\n', '').trim());
-      cleanedSplitItem.push(splitItem[1].replace('\n', '').trim());
-      insertList.push(cleanedSplitItem);
-    });
+    try{
+      itemsArr.forEach(item => {
+        const splitItem = item.split('-').reverse();
+        const cleanedSplitItem = [];
+        cleanedSplitItem.push(splitItem[0].replace('\n', '').trim());
+        cleanedSplitItem.push(splitItem[1].replace('\n', '').trim());
+        insertList.push(cleanedSplitItem);
+      });
+    }
+    catch(error){
+      Alert.alert(
+        "Import error",
+        "Import string was not in correct format",
+        [
+          { text: "OK"}
+        ]
+      );
+      setUploadString("");
+    }
     _saveImport(insertList);
   }
 
