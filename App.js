@@ -4,8 +4,10 @@ import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 
 
@@ -19,6 +21,7 @@ export default function App() {
   const [engMode, setEngMode] = useState(false);
   const [showTrnsl, setShowTrnsl] = useState(true);
   const [uploadString, setUploadString] = useState('');
+  const [darkMode, setDarkMode] = useState(true);
 
   const editIconSize = 20;
 
@@ -26,7 +29,16 @@ export default function App() {
     list.sort((a, b) => {
       let aFld = engMode ? a.eng.toLowerCase() : a.esp.toLowerCase(),
           bFld = engMode ? b.eng.toLowerCase() : b.esp.toLowerCase();
-  
+      
+      if(engMode) {
+        if(aFld.substring(0, 3) === "to ") {
+          aFld = aFld.slice(2).trim();
+        }
+        if(bFld.substring(0, 3) === "to ") {
+          bFld = bFld.slice(2).trim();
+        }
+      }
+
       if ( aFld < bFld) {
           return -1;
       }
@@ -141,6 +153,10 @@ export default function App() {
     setShowImport(!showImport);
     setShowAdd(false);
   }
+
+  function darkModeButtonClick(){
+    setDarkMode(!darkMode);
+  }
   
   function onAddWordClick(){
     addWord();
@@ -171,6 +187,7 @@ export default function App() {
       setUploadString("");
     }
     _saveImport(insertList);
+    setShowImport(false);
   }
 
   function exportItems(){
@@ -206,6 +223,7 @@ export default function App() {
       setEspText('');
       setEngText('');
       _storeItem(newItem);
+      setShowAdd(false);
     }
   }
   function tapListItem(item){
@@ -245,36 +263,64 @@ export default function App() {
       setWordList(newList);
     }
   }
+  function addFromFilter(){
+    setShowAdd(true);
+    if(engMode){setEngText(filterString);}
+    else{setEspText(filterString);}
+    setFilterString("");
+  }
   return (
-    <View style={styles.container}> 
+    <View style={[styles.container, darkMode ? styles.darkBackground : styles.lightBackground]}> 
       <ButtonBar showAdd={showAdd} showImport={showImport} engMode={engMode} showTrnsl={showTrnsl} 
         setShowAdd={setShowAdd} setShowImport={setShowImport} setEngMode={setEngMode} setShowTrnsl={setShowTrnsl} 
-        addButtonClick={addButtonClick}  langButtonClick={langButtonClick} importButtonClick={importButtonClick} deleteAll={deleteAll} />
+        addButtonClick={addButtonClick}  langButtonClick={langButtonClick} importButtonClick={importButtonClick} deleteAll={deleteAll} 
+        darkMode={darkMode} darkModeButtonClick={darkModeButtonClick}  />
       
-      <AddSection showAdd={showAdd} engText={engText} espText={espText} 
+      <AddSection showAdd={showAdd} engText={engText} espText={espText} darkMode={darkMode}
         setEngText={setEngText} setEspText={setEspText} onAddWordClick={onAddWordClick} />
       <ImportSection showImport={showImport} uploadString={uploadString} 
         importItems={importItems} exportItems={exportItems} setUploadString={setUploadString}/>
-      <TextInput style={styles.filterBox} defaultValue={filterString} onChangeText={newText => setFilterString(newText)} placeholder='filter...' />
+      <View style={styles.filterBar}>
+        <TextInput style={styles.filterBox} 
+          defaultValue={filterString} onChangeText={newText => setFilterString(newText)} placeholder='filter...'
+            placeholderTextColor="gray" />
+            
+        <TouchableOpacity style={[styles.filterClear, styles.filterButton]} onPress={()=> setFilterString("")}>
+                <EntypoIcon
+                  name='erase' 
+                  size={17}
+                  color='black'/>
+              </TouchableOpacity>
+        <TouchableOpacity style={[styles.filterAdd, styles.filterButton]} onPress={()=> addFromFilter()}>
+                <EntypoIcon
+                  name='add-to-list' 
+                  size={17}
+                  color='black'/>
+              </TouchableOpacity>
+        
+      </View>
       <View style={styles.listSection}>
         <FlatList data={wordList.filter(word => word.eng.toLowerCase().includes(filterString.toLocaleLowerCase()) 
                                         || word.esp.toLowerCase().includes(filterString.toLocaleLowerCase()))}
-          extraData={wordList}
           renderItem={({item}) => 
-            <ListItem engMode={engMode} showTrnsl={showTrnsl} item={item} editIconSize={editIconSize}
+            <ListItem engMode={engMode} showTrnsl={showTrnsl} item={item} editIconSize={editIconSize} darkMode={darkMode}
             tapListItem={tapListItem} saveListItem={saveListItem} closeListItem={closeListItem} deleteListItem={deleteListItem}  />
           }
+          initialNumToRender={30}
+          maxToRenderPerBatch={10} 
+          updateCellsBatchingPeriod={50}
+          windowSize={5}
         />
       </View>
     </View>
   );
 }
 
-function ListItem(props) {
+function ListItem(props){
   if(!props.item.editMode){
     return(
       <TouchableOpacity onPress={() => props.tapListItem(props.item)}>
-        <Text style={styles.item}>
+        <Text style={props.darkMode ? styles.darkModeTextColor : styles.lightModeTextcolor}>
           { (props.engMode ? props.item.eng : props.item.esp)  + (props.showTrnsl ? " - " + (props.engMode? props.item.esp : props.item.eng) : '') }
         </Text>
       </TouchableOpacity>
@@ -364,6 +410,14 @@ function ButtonBar(props) {
           size={20}
           color={'#D42222'}/>
       </TouchableOpacity>
+
+      <TouchableOpacity style={[styles.topButton, props.darkMode ? styles.lightModeButton : styles.darkModeButton]} 
+        onPress={() => props.darkModeButtonClick()} >
+        <MaterialCommunityIcons
+          name={'theme-light-dark'}
+          size={20}
+          color={props.darkMode ? '#1f1f1f' : '#fff'}/>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -373,7 +427,7 @@ function AddSection(props) {
     return(
       <> 
         <View style={styles.inputGroup}>
-          <Text style={styles.headerText}>English:</Text>
+          <Text style={[styles.headerText, props.darkMode? styles.darkModeTextColor : styles.lightModeTextcolor]}>English:</Text>
           <TextInput
             style={styles.textBox}
             onChangeText={newText => props.setEngText(newText)}
@@ -382,7 +436,7 @@ function AddSection(props) {
         </View>
   
         <View style={styles.inputGroup}>
-          <Text style={styles.headerText}>Spanish:</Text>
+          <Text style={[styles.headerText, props.darkMode? styles.darkModeTextColor : styles.lightModeTextcolor]}>Spanish:</Text>
           <TextInput
             style={styles.textBox}
             onChangeText={newText => props.setEspText(newText)}
@@ -413,7 +467,7 @@ function ImportSection(props) {
                 numberOfLines={10}
               />
         </View>
-        <Text style={styles.importExampleText}>Format: Lang2Word1: Lang1Word1, Lang2Word2: Lang1Word2 etc...</Text>
+        <Text style={styles.importExampleText}>Format: Lang2Word1 - Lang1Word1, Lang2Word2 - Lang1Word2 etc...</Text>
         <View style={styles.importButtons}>
           <View style={styles.importButton}>
             <Button onPress={() => props.exportItems()} 
@@ -436,11 +490,22 @@ const editHeight = 40;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    marginTop: 50,
-    marginLeft: 30
+    paddingTop: 50,
+    paddingLeft: 30,
+  },
+  darkBackground: {
+    backgroundColor: '#1f1f1f'
+  },
+  lightBackground: {
+    backgroundColor: '#fff'
+  },
+  darkModeTextColor: {
+    color: 'white'
+  },
+  lightModeTextcolor: {
+    color: 'black'
   },
   buttonBarWrapper: {
     justifyContent: 'flex-start',
@@ -458,16 +523,39 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  filterBar: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    height: 30,
+    marginBottom: 10
+  },
   filterBox: {
     borderColor: 'gray',
     borderWidth: .4,
-    height: 30,
     width: '70%',
     borderRadius: 5,
     marginBottom: 10,
+    color: 'gray',
+    paddingLeft: 5,
+    backgroundColor: 'white',
+    marginRight: 15
+  },
+  filterButton: {
+    backgroundColor: '#D6D6D6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 30,
+    width: 30,
+    borderRadius: 4,
+    marginRight: 15,
+  },
+  filterAdd: {
+  },
+  filterClear: {
   },
   listSection: {
-    maxHeight: 670,
+    maxHeight: 600,
     width: '100%',
   },
   showAddButtonOpen: {
@@ -488,6 +576,12 @@ const styles = StyleSheet.create({
   killButton: {
     backgroundColor: '#4d4d4d'
   },
+  darkModeButton: {
+    backgroundColor: '#4d4d4d'
+  },
+  lightModeButton: {
+    backgroundColor: '#D6D6D6'
+  },
   showTrnslButton: {
     width: 80,
     marginRight: 10,
@@ -496,8 +590,9 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     height: 50,
-  },
-  item: {
+    paddingLeft: 5,
+    backgroundColor: 'white',
+    color: 'black'
   },
   itemEditMode: {
     justifyContent: 'flex-end',
@@ -509,6 +604,8 @@ const styles = StyleSheet.create({
   itemEditTextbox: {
     height: editHeight,
     borderColor: 'gray',
+    color: 'gray',
+    backgroundColor: 'white',
     borderLeftWidth: 1,
     borderRightWidth: 1,
     borderTopWidth: .4,
