@@ -56,10 +56,10 @@ export default function App() {
       const loadedWordList = [];
       storedData.forEach(storedItem => {
         const loadedWordItem = {
-          eng: storedItem[0],
-          esp: storedItem[1],
-          newEng: storedItem[0],
-          newEsp: storedItem[1],
+          esp: storedItem[0],
+          eng: storedItem[1],
+          newEsp: storedItem[0],
+          newEng: storedItem[1],
           editMode: false
         };
         loadedWordList.push(loadedWordItem);
@@ -85,22 +85,22 @@ export default function App() {
   }
   const _storeItem = async (item) => {
     try {
-      await AsyncStorage.setItem(item.eng, item.esp);
+      await AsyncStorage.setItem(item.esp, item.eng);
     }
     catch (error) {
     }
   }
   const _deleteItem = async (item) => {
     try {
-      await AsyncStorage.removeItem(item.eng);
+      await AsyncStorage.removeItem(item.esp);
     }
     catch (error) {
     }
   }
   const _updateItem = async (item) => {
     try {
-      await AsyncStorage.removeItem(item.eng);
-      await AsyncStorage.setItem(item.newEng, item.newEsp);
+      await AsyncStorage.removeItem(item.esp);
+      await AsyncStorage.setItem(item.newEsp, item.newEng);
     }
     catch (error) {
     }
@@ -169,7 +169,7 @@ export default function App() {
     const insertList = [];
     try{
       itemsArr.forEach(item => {
-        const splitItem = item.split('-').reverse();
+        const splitItem = item.split('-');
         const cleanedSplitItem = [];
         cleanedSplitItem.push(splitItem[0].replace('\n', '').trim());
         cleanedSplitItem.push(splitItem[1].replace('\n', '').trim());
@@ -270,7 +270,12 @@ export default function App() {
     setFilterString("");
   }
   return (
+    
     <View style={[styles.container, darkMode ? styles.darkBackground : styles.lightBackground]}> 
+    <StatusBar style={ darkMode ? "light" : "dark"} />
+    <Text style={[styles.numWords, darkMode ? styles.darkModeTextColor : styles.lightModeTextcolor]}>
+        Words: {wordList.length}
+      </Text>
       <ButtonBar showAdd={showAdd} showImport={showImport} engMode={engMode} showTrnsl={showTrnsl} 
         setShowAdd={setShowAdd} setShowImport={setShowImport} setEngMode={setEngMode} setShowTrnsl={setShowTrnsl} 
         addButtonClick={addButtonClick}  langButtonClick={langButtonClick} importButtonClick={importButtonClick} deleteAll={deleteAll} 
@@ -513,8 +518,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
-    marginTop: 15,
-    marginBottom: 20,
+    marginTop: 5,
+    marginBottom: 10,
   },
   topButton: {
     width: 40,
@@ -555,7 +560,7 @@ const styles = StyleSheet.create({
   filterClear: {
   },
   listSection: {
-    maxHeight: 600,
+    maxHeight: 670,
     width: '100%',
   },
   showAddButtonOpen: {

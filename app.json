@@ -2,7 +2,7 @@
   "expo": {
     "name": "Translation Vocab List",
     "slug": "TranslationVocabList",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/translateicon.png",
     "userInterfaceStyle": "light",
@@ -22,7 +22,7 @@
     },
     "android": {
       "package": "com.TranslationVocabList",
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/translateicon.png",
         "backgroundColor": "#FFFFFF"
