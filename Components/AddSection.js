@@ -1,6 +1,7 @@
-import { Text, TextInput, View, Button } from "react-native";
+import { Text, TextInput, View, Button, TouchableOpacity } from "react-native";
 import React from "react";
 import { styles } from "../assets/stylesheet";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const AddSection = (props) => {
   if (props.showAdd) {
@@ -15,13 +16,28 @@ const AddSection = (props) => {
                 : styles.lightModeTextcolor,
             ]}
           >
-            English:
+            Spanish:
           </Text>
-          <TextInput
-            style={styles.textBox}
-            onChangeText={(newText) => props.setEngText(newText)}
-            value={props.engText}
-          />
+          <View style={[styles.flexParent, styles.addSectionTextSearchGroup]}>
+            <TextInput
+              style={[styles.textBox, styles.addSectionTextBox]}
+              onChangeText={(newText) => props.setEspText(newText)}
+              value={props.espText}
+            />
+            <TouchableOpacity
+              style={[
+                styles.addSectionTranslateButton,
+                props.darkMode ? styles.lightModeButton : styles.darkModeButton,
+              ]}
+              onPress={() => props.translateEspText()}
+            >
+              <MaterialCommunityIcons
+                name={"google-translate"}
+                size={20}
+                color={props.darkMode ? "#1f1f1f" : "#fff"}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.inputGroup}>
@@ -33,13 +49,28 @@ const AddSection = (props) => {
                 : styles.lightModeTextcolor,
             ]}
           >
-            Spanish:
+            English:
           </Text>
-          <TextInput
-            style={styles.textBox}
-            onChangeText={(newText) => props.setEspText(newText)}
-            value={props.espText}
-          />
+          <View style={[styles.flexParent, styles.addSectionTextSearchGroup]}>
+            <TextInput
+              style={[styles.textBox, styles.addSectionTextBox]}
+              onChangeText={(newText) => props.setEngText(newText)}
+              value={props.engText}
+            />
+            <TouchableOpacity
+              style={[
+                styles.addSectionTranslateButton,
+                props.darkMode ? styles.lightModeButton : styles.darkModeButton,
+              ]}
+              onPress={() => props.translateEngText()}
+            >
+              <MaterialCommunityIcons
+                name={"google-translate"}
+                size={20}
+                color={props.darkMode ? "#1f1f1f" : "#fff"}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.addButton}>

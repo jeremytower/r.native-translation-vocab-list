@@ -10,15 +10,18 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^0.17.0",
+    "@google-cloud/translate": "^7.2.1",
     "@react-native-async-storage/async-storage": "^1.17.10",
     "expo": "~46.0.9",
     "expo-status-bar": "~1.4.0",
+    "google-auth-library": "^3.0.0",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-native": "0.69.9",
     "react-native-paper": "^5.7.0",
     "react-native-vector-icons": "^9.2.0",
-    "react-native-web": "~0.18.7"
+    "react-native-web": "~0.18.7",
+    "retry-request": "^5.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

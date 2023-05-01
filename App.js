@@ -15,6 +15,7 @@ import AddSection from "./Components/AddSection";
 import ImportSection from "./Components/ImportSection";
 import ListItem from "./Components/ListItem";
 import { styles } from "./assets/stylesheet";
+const { Translate } = require("@google-cloud/translate").v2;
 
 export default function App() {
   const [wordList, setWordList] = useState([]);
@@ -137,6 +138,26 @@ export default function App() {
   function addButtonClick() {
     setShowAdd(!showAdd);
     setShowImport(false);
+  }
+
+  const translate = new Translate({
+    projectId: "cogent-point-385320",
+    key: "AIzaSyAblDobLs2RVJwzbebc4PHWG9UNyBEhh0I",
+  });
+
+  async function translateEspText() {
+    const translation = await translate.translate(espText, "en");
+    setEngText(translation[0]);
+  }
+
+  async function translateEngText() {
+    const translation = await translate.translate(engText, "es");
+    setEspText(translation[0]);
+  }
+
+  async function translateText(text, targetLanguage) {
+    const translation = await translate.translate(text, "es");
+    return translation;
   }
 
   function langButtonClick() {
@@ -328,6 +349,8 @@ export default function App() {
         setEngText={setEngText}
         setEspText={setEspText}
         onAddWordClick={onAddWordClick}
+        translateEspText={translateEspText}
+        translateEngText={translateEngText}
       />
       <ImportSection
         showImport={showImport}

@@ -2,7 +2,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import IonIcon from "react-native-vector-icons/Ionicons";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { styles } from "../assets/stylesheet";

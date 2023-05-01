@@ -32,6 +32,16 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 10,
   },
+  flexParent: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+  },
+  flexParentReverse: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row-reverse",
+  },
   topButton: {
     width: 40,
     borderRadius: 4,
@@ -205,5 +215,17 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   importButton: { marginRight: 10 },
+  addSectionTextSearchGroup: {},
+  addSectionTextBox: {
+    flexGrow: 1,
+    flexShrink: 1,
+  },
+  addSectionTranslateButton: {
+    width: 40,
+    borderRadius: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 10,
+  },
 });
 export { styles };
