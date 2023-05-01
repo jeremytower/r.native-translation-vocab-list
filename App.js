@@ -15,7 +15,7 @@ import AddSection from "./Components/AddSection";
 import ImportSection from "./Components/ImportSection";
 import ListItem from "./Components/ListItem";
 import { styles } from "./assets/stylesheet";
-const { Translate } = require("@google-cloud/translate").v2;
+import { keys } from "./assets/keys";
 
 export default function App() {
   const [wordList, setWordList] = useState([]);
@@ -140,19 +140,62 @@ export default function App() {
     setShowImport(false);
   }
 
-  const translate = new Translate({
-    projectId: "cogent-point-385320",
-    key: "AIzaSyAblDobLs2RVJwzbebc4PHWG9UNyBEhh0I",
-  });
+  function translateText(text, sourceLang, targetLang, apiKey, callback) {
+    const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+
+    const data = {
+      q: text,
+      source: sourceLang,
+      target: targetLang,
+      format: "text",
+    };
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        const jsonResponse = JSON.parse(xhr.responseText);
+        const translatedText = jsonResponse.data.translations[0].translatedText;
+        callback(null, translatedText);
+      } else if (xhr.readyState === 4) {
+        callback(`Error ${xhr.status}: ${xhr.statusText}`);
+      }
+    };
+
+    xhr.send(JSON.stringify(data));
+  }
 
   async function translateEspText() {
-    const translation = await translate.translate(espText, "en");
-    setEngText(translation[0]);
+    translateText(
+      espText,
+      "es",
+      "en",
+      keys.googleTranslateApiKey,
+      function (error, translatedText) {
+        if (error) {
+          console.error("Error:", error);
+        } else if (translatedText) {
+          setEngText(translatedText);
+        }
+      }
+    );
   }
 
   async function translateEngText() {
-    const translation = await translate.translate(engText, "es");
-    setEspText(translation[0]);
+    translateText(
+      engText,
+      "en",
+      "es",
+      keys.googleTranslateApiKey,
+      function (error, translatedText) {
+        if (error) {
+          console.error("Error:", error);
+        } else if (translatedText) {
+          setEspText(translatedText);
+        }
+      }
+    );
   }
 
   function langButtonClick() {
