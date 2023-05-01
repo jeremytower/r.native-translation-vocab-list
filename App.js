@@ -155,11 +155,6 @@ export default function App() {
     setEspText(translation[0]);
   }
 
-  async function translateText(text, targetLanguage) {
-    const translation = await translate.translate(text, "es");
-    return translation;
-  }
-
   function langButtonClick() {
     setEngMode(!engMode);
     setShowAdd(false);
