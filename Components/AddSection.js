@@ -70,13 +70,13 @@ const AddSection = (props) => {
               ]}
               onPress={() => props.translateEngText()}
             >
-              <MaterialCommunityIcons
-                name={"google-translate"}
+              <IonIcon
+                name={"arrow-up"}
                 size={20}
                 color={props.darkMode ? "#1f1f1f" : "#fff"}
               />
-              <IonIcon
-                name={"arrow-up"}
+              <MaterialCommunityIcons
+                name={"google-translate"}
                 size={20}
                 color={props.darkMode ? "#1f1f1f" : "#fff"}
               />
